@@ -1,5 +1,5 @@
 function Cell() {
-    let value = 0;
+    let value = '';
     
     const addToken = (player) => {
         value = player;
@@ -29,11 +29,11 @@ const gameBoard = (() => {
     const getBoard = () => board;
 
     const placeToken = (row, column, player) => {
-        if (board[row][column].getValue() === 0) {
+        if (board[row][column].getValue() === '') {
             board[row][column].addToken(player);
-        } else {
+        } /*else {
             console.log("invalid move");
-        }
+        }*/
     };
 
     const printBoard = () => {
@@ -77,16 +77,17 @@ const gameEngine = (() => {
     
     return {playRound, getActivePlayer, getBoard: board.getBoard};
 })();
-/*
+
 const screenRender = (() => {
+    const game = gameEngine;
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
 
     const updateScreen = () => {
         boardDiv.textContent = "";
 
-        const board = gameEngine.getBoard();
-        const activePlayer = gameEngine.getActivePlayer();
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
 
         playerTurnDiv.textContent = `${activePlayer.getName()}'s turn...`
 
@@ -103,25 +104,26 @@ const screenRender = (() => {
             })
         })
     }
-
+    
     function clickHandlerBoard(e) {
         const selectedRow = e.target.dataset.row;
         const selectedColumn = e.target.dataset.column;
 
         if (!selectedRow || !selectedColumn) return;
 
-        gameEngine.playRound(selectedRow, selectedColumn);
+        game.playRound(selectedRow, selectedColumn);
         updateScreen();
     }
     boardDiv.addEventListener("click", clickHandlerBoard);
-
+    
     return {clickHandlerBoard, updateScreen}
 })();
-*/
-//console.log(gameBoard.placeToken(1, 2, gameEngine.player1));
-//console.log(gameBoard.getBoard());
+
+/*
 gameEngine.playRound(1, 1);
 gameEngine.playRound(0, 2);
 gameEngine.playRound(0, 1);
-gameEngine.playRound(1, 1);
-//screenRender.clickHandlerBoard();
+gameEngine.playRound(0, 0);*/
+const fubar = screenRender;
+fubar.updateScreen();
+fubar.clickHandlerBoard();
