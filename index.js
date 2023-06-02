@@ -30,13 +30,18 @@ const gameBoard = (() => {
 
     const placeToken = (row, column, player) => {
         if (board[row][column].getValue() === 0) {
-            return board[row].splice(column, 1, player);
+            board[row][column].addToken(player);
         } else {
-            return console.log("invalid move");
+            console.log("invalid move");
         }
     };
 
-    return {getBoard, placeToken};
+    const printBoard = () => {
+        const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
+        console.log(boardWithCellValues);
+      };
+
+    return {getBoard, placeToken, printBoard};
 })();
 
 const Player = (name, token) => {
@@ -50,7 +55,7 @@ const gameEngine = (() => {
     let player1 = Player("Player 1", "X");
     let player2 = Player("Player 2", "O");
     let activePlayer = player1;
-    const board = gameBoard.getBoard();
+    const board = gameBoard;
 
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === player1 ? player2 : player1;
@@ -59,12 +64,12 @@ const gameEngine = (() => {
     const getActivePlayer = () => activePlayer;
 
     const printNewRound = () => {
-        console.log(gameBoard.getBoard());
+        board.printBoard();
         console.log(`It's ${getActivePlayer().getName()}'s turn...`);
     };
     
     const playRound = (rowSelect, columnSelect) => {
-        gameBoard.placeToken(rowSelect, columnSelect, getActivePlayer().getToken());
+        board.placeToken(rowSelect, columnSelect, getActivePlayer().getToken());
         switchPlayerTurn();
         printNewRound();
     };
@@ -72,7 +77,7 @@ const gameEngine = (() => {
     
     return {playRound, getActivePlayer, getBoard: board.getBoard};
 })();
-
+/*
 const screenRender = (() => {
     const playerTurnDiv = document.querySelector('.turn');
     const boardDiv = document.querySelector('.board');
@@ -83,7 +88,7 @@ const screenRender = (() => {
         const board = gameEngine.getBoard();
         const activePlayer = gameEngine.getActivePlayer();
 
-        playerTurnDiv.textContent = `${getActivePlayer.getName()}'s turn...`
+        playerTurnDiv.textContent = `${activePlayer.getName()}'s turn...`
 
         board.forEach((row, rowIndex) => {
             row.forEach((cell, columnIndex) => {
@@ -109,12 +114,14 @@ const screenRender = (() => {
         updateScreen();
     }
     boardDiv.addEventListener("click", clickHandlerBoard);
-    
+
     return {clickHandlerBoard, updateScreen}
 })();
-/*
-console.log(gameBoard.placeToken(1, 2, "X"));
-console.log(gameBoard.getBoard());
+*/
+//console.log(gameBoard.placeToken(1, 2, gameEngine.player1));
+//console.log(gameBoard.getBoard());
 gameEngine.playRound(1, 1);
-gameEngine.playRound(0, 2);*/
-screenRender.clickHandlerBoard();
+gameEngine.playRound(0, 2);
+gameEngine.playRound(0, 1);
+gameEngine.playRound(1, 1);
+//screenRender.clickHandlerBoard();
