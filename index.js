@@ -1,5 +1,5 @@
 function Cell() {
-    let value = '';
+    let value = ' ';
     
     const addToken = (player) => {
         value = player;
@@ -18,7 +18,8 @@ const gameBoard = (() => {
     for (let i = 0; i < rows; i++) {
         board[i] = [];
         for (let j = 0; j < columns; j++) {
-          board[i].push(Cell());for (let i = 0; i < rows; i++) {
+          board[i].push(Cell());
+          for (let i = 0; i < rows; i++) {
             board[i] = [];
             for (let j = 0; j < columns; j++) {
               board[i].push(Cell());
@@ -29,7 +30,7 @@ const gameBoard = (() => {
     const getBoard = () => board;
 
     const placeToken = (row, column, player) => {
-        if (board[row][column].getValue() === '') {
+        if (board[row][column].getValue() === ' ') {
             board[row][column].addToken(player);
         } /*else {
             console.log("invalid move");
@@ -39,6 +40,7 @@ const gameBoard = (() => {
     const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
         console.log(boardWithCellValues);
+        return boardWithCellValues;
       };
 
     return {getBoard, placeToken, printBoard};
@@ -75,7 +77,7 @@ const gameEngine = (() => {
     };
     printNewRound();
     
-    return {playRound, getActivePlayer, getBoard: board.getBoard};
+    return {playRound, switchPlayerTurn, getActivePlayer, getBoard: board.getBoard};
 })();
 
 const screenRender = (() => {
@@ -89,7 +91,7 @@ const screenRender = (() => {
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
 
-        playerTurnDiv.textContent = `${activePlayer.getName()}'s turn...`
+        playerTurnDiv.textContent = `${activePlayer.getName()}'s turn...`;
 
         board.forEach((row, rowIndex) => {
             row.forEach((cell, columnIndex) => {
@@ -105,6 +107,42 @@ const screenRender = (() => {
         })
     }
     
+
+    const checkVictory = () => {
+        const status = gameBoard.printBoard();
+        
+        const victoryConditions = [
+            [['X', 'X', 'X'], [' ', ' ', ' '], [' ', ' ', ' ']], // Row 1
+            [[' ', ' ', ' '], ['X', 'X', 'X'], [' ', ' ', ' ']], // Row 2
+            [[' ', ' ', ' '], [' ', ' ', ' '], ['X', 'X', 'X']], // Row 3
+            [['X', ' ', ' '], ['X', ' ', ' '], ['X', ' ', ' ']], // Column 1
+            [[' ', 'X', ' '], [' ', 'X', ' '], [' ', 'X', ' ']], // Column 2
+            [[' ', ' ', 'X'], [' ', ' ', 'X'], [' ', ' ', 'X']], // Column 3
+            [['X', ' ', ' '], [' ', 'X', ' '], [' ', ' ', 'X']], // Diagonal 1
+            [[' ', ' ', 'X'], [' ', 'X', ' '], ['X', ' ', ' ']]  // Diagonal 2    
+        ]
+
+        const isVictory = victoryConditions.some(condition => {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (condition[i][j] !== ' ' && status[i][j] !== condition[i][j]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        });
+
+        if (isVictory) {
+            gameEngine.switchPlayerTurn();
+            const activePlayer = gameEngine.getActivePlayer();
+            playerTurnDiv.textContent = `${activePlayer.getName()} wins...`;
+            console.log("Triggered")
+        } else {
+            console.log("No victory yet...");
+        }   
+    };
+
     function clickHandlerBoard(e) {
         const selectedRow = e.target.dataset.row;
         const selectedColumn = e.target.dataset.column;
@@ -112,18 +150,16 @@ const screenRender = (() => {
         if (!selectedRow || !selectedColumn) return;
 
         game.playRound(selectedRow, selectedColumn);
+        
         updateScreen();
+        checkVictory();
     }
+
+
     boardDiv.addEventListener("click", clickHandlerBoard);
     
-    return {clickHandlerBoard, updateScreen}
+
+    updateScreen();
 })();
 
-/*
-gameEngine.playRound(1, 1);
-gameEngine.playRound(0, 2);
-gameEngine.playRound(0, 1);
-gameEngine.playRound(0, 0);*/
-const fubar = screenRender;
-fubar.updateScreen();
-fubar.clickHandlerBoard();
+
