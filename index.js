@@ -32,9 +32,7 @@ const gameBoard = (() => {
     const placeToken = (row, column, player) => {
         if (board[row][column].getValue() === ' ') {
             board[row][column].addToken(player);
-        } /*else {
-            console.log("invalid move");
-        }*/
+        } 
     };
 
     const printBoard = () => {
@@ -111,7 +109,7 @@ const screenRender = (() => {
     const checkVictory = () => {
         const status = gameBoard.printBoard();
         
-        const victoryConditions = [
+        const victoryConditionsX = [
             [['X', 'X', 'X'], [' ', ' ', ' '], [' ', ' ', ' ']], // Row 1
             [[' ', ' ', ' '], ['X', 'X', 'X'], [' ', ' ', ' ']], // Row 2
             [[' ', ' ', ' '], [' ', ' ', ' '], ['X', 'X', 'X']], // Row 3
@@ -122,7 +120,7 @@ const screenRender = (() => {
             [[' ', ' ', 'X'], [' ', 'X', ' '], ['X', ' ', ' ']]  // Diagonal 2    
         ]
 
-        const isVictory = victoryConditions.some(condition => {
+        const isVictoryX = victoryConditionsX.some(condition => {
             for (let i = 0; i < 3; i++) {
                 for (let j = 0; j < 3; j++) {
                     if (condition[i][j] !== ' ' && status[i][j] !== condition[i][j]) {
@@ -133,11 +131,35 @@ const screenRender = (() => {
             return true;
         });
 
-        if (isVictory) {
+        const victoryConditionsO = [
+            [['O', 'O', 'O'], [' ', ' ', ' '], [' ', ' ', ' ']], // Row 1
+            [[' ', ' ', ' '], ['O', 'O', 'O'], [' ', ' ', ' ']], // Row 2
+            [[' ', ' ', ' '], [' ', ' ', ' '], ['O', 'O', 'O']], // Row 3
+            [['O', ' ', ' '], ['O', ' ', ' '], ['O', ' ', ' ']], // Column 1
+            [[' ', 'O', ' '], [' ', 'O', ' '], [' ', 'O', ' ']], // Column 2
+            [[' ', ' ', 'O'], [' ', ' ', 'O'], [' ', ' ', 'O']], // Column 3
+            [['O', ' ', ' '], [' ', 'O', ' '], [' ', ' ', 'O']], // Diagonal 1
+            [[' ', ' ', 'O'], [' ', 'O', ' '], ['O', ' ', ' ']]  // Diagonal 2    
+        ]
+
+        const isVictoryO = victoryConditionsO.some(condition => {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (condition[i][j] !== ' ' && status[i][j] !== condition[i][j]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        });
+
+
+        if (isVictoryX || isVictoryO) {
             gameEngine.switchPlayerTurn();
             const activePlayer = gameEngine.getActivePlayer();
             playerTurnDiv.textContent = `${activePlayer.getName()} wins...`;
             console.log("Triggered")
+            boardDiv.removeEventListener("click", clickHandlerBoard);
         } else {
             console.log("No victory yet...");
         }   
@@ -153,6 +175,7 @@ const screenRender = (() => {
         
         updateScreen();
         checkVictory();
+        
     }
 
 
