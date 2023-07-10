@@ -6,12 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="index.js" defer></script>
-    <title>Tic-Tac-Toe</title>
+    <title>Tic Tac Toe</title>
 </head>
 <body>
-    <div class="container">
-        <h1 class="turn"></div>
-        <div class="board"></div>
+    <h1>Tic Tac Toe</h1>
+
+    <div class="turn"></div>
+    <div class="board"></div>
+
+    <button class="btn-open">Enter Names</button>
+
+    <div class="modal hidden">
+        <div class="modal-content">
+            <div class="result"></div>
+            <h2>Enter Player Names</h2>
+            <form id="nameForm">
+                <label for="playerName1">Player 1:</label>
+                <input type="text" id="playerName1" placeholder="Player 1 Name" required>
+                <label for="playerName2">Player 2:</label>
+                <input type="text" id="playerName2" placeholder="Player 2 Name" required>
+                <button type="submit">Start Game</button>
+            </form>
+            <button class="btn-close">Close</button>
+            <button class="btn-play-again">Play Again</button>
+        </div>   
     </div>
+    <div class="overlay hidden"></div>
+    
 </body>
 </html>
